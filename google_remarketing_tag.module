@@ -7,7 +7,7 @@ function google_remarketing_tag_permission() {
   return array(
     'administer google remarketing tag configuration' => array(
       'title' => t('Administer Google Remarketing Tag configuration'),
-    )
+    ),
   );
 }
 
@@ -55,27 +55,27 @@ function google_remarketing_tag_admin_settings($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Conversion ID'),
     '#default_value' => variable_get('google_remarketing_tag_conversion_id'),
-    '#required' => TRUE
+    '#required' => TRUE,
   );
 
   $form['google_remarketing_tag_conversion_label'] = array(
     '#type' => 'textfield',
     '#title' => t('Conversion Label'),
     '#default_value' => variable_get('google_remarketing_tag_conversion_label'),
-    '#required' => FALSE
+    '#required' => FALSE,
   );
 
   $form['google_remarketing_tag_custom_params'] = array(
     '#type' => 'textfield',
     '#title' => t('Custom Params'),
     '#default_value' => variable_get('google_remarketing_tag_custom_params'),
-    '#required' => FALSE
+    '#required' => FALSE,
   );
-  
+
   $form['google_remarketing_tag_remarketing_only'] = array(
     '#type' => 'checkbox',
     '#title' => t('Remarketing Only'),
-    '#default_value' => variable_get('google_remarketing_tag_remarketing_only')
+    '#default_value' => variable_get('google_remarketing_tag_remarketing_only'),
   );
 
   return system_settings_form($form);
@@ -90,15 +90,15 @@ function google_remarketing_tag_page_alter(&$page) {
   $theme_vars['custom_params'] = variable_get('google_remarketing_tag_custom_params', '');
   $theme_vars['remarketing_only'] = empty(variable_get('google_remarketing_tag_remarketing_only', '')) ? 'false' : 'true';
   $theme_vars['conversion_label'] = variable_get('google_remarketing_tag_conversion_label', '');
-  
-  $label = empty($theme_vars['conversion_label']) ? '' : 'label='.$theme_vars['conversion_label'].'&amp;';
-  
+
+  $label = empty($theme_vars['conversion_label']) ? '' : 'label=' . $theme_vars['conversion_label'] . '&amp;';
+
   $theme_vars['src'] = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $theme_vars['conversion_id'] . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';;
-  
+
   if (!empty($theme_vars['conversion_id'])) {
     $page['page_bottom']['remarketing_tag'] = array(
-        '#type' => 'markup',
-        '#markup' => theme('remarketing_tag', $theme_vars),
+      '#type' => 'markup',
+      '#markup' => theme('remarketing_tag', $theme_vars),
     );
   }
 }

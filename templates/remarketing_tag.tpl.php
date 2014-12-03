@@ -18,3 +18,4 @@ var google_remarketing_only = <?php print $remarketing_only; ?>;
 <img height="1" width="1" style="border-style:none;" alt="" src="<?php print $src; ?>"/>
 </div>
 </noscript>
+
