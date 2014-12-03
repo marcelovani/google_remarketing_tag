@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function google_remarketing_tag_install() {
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function google_remarketing_tag_uninstall() {
+  variable_del('google_remarketing_tag_conversion_id');
+  variable_del('google_remarketing_tag_conversion_label');
+  variable_del('google_remarketing_tag_custom_params');
+  variable_del('google_remarketing_tag_remarketing_only');
+}

@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * Implements hook_permission().
+ */
+function google_remarketing_tag_permission() {
+  return array(
+    'administer google remarketing tag configuration' => array(
+      'title' => t('Administer Google Remarketing Tag configuration'),
+    )
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function google_remarketing_tag_theme($existing, $type, $theme, $path) {
+  return array(
+    'flag_label' => array(
+      'variables' => array(
+        'conversion_id' => '',
+        'conversion_label' => '',
+        'custom_params' => '',
+        'remarketing_only' => '',
+      ),
+      'path' => $path . '/templates',
+      'template' => 'google_remarketing_tag',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function google_remarketing_tag_menu() {
+  $items['admin/config/system/googleremarketingtag'] = array(
+    'title' => 'Google Remarketing Tag Configuration',
+    'description' => "Configure the settings used to integrate Google Remarketing Tag.",
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('google_remarketing_tag_admin_settings'),
+    'access arguments' => array('administer google remarketing tag configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Admin settings form for module settings configuration.
+ */
+function google_remarketing_tag_admin_settings($form, &$form_state) {
+  $form = array();
+
+  $form['google_remarketing_tag_conversion_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Conversion ID'),
+    '#default_value' => variable_get('google_remarketing_tag_conversion_id'),
+    '#required' => TRUE
+  );
+
+  $form['google_remarketing_tag_conversion_label'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Conversion Label'),
+    '#default_value' => variable_get('google_remarketing_tag_conversion_label'),
+    '#required' => FALSE
+  );
+
+  $form['google_remarketing_tag_custom_params'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Custom Params'),
+    '#default_value' => variable_get('google_remarketing_tag_custom_params'),
+    '#required' => FALSE
+  );
+  
+  $form['google_remarketing_tag_remarketing_only'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Remarketing Only'),
+    '#default_value' => variable_get('google_remarketing_tag_remarketing_only')
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function google_remarketing_tag_page_alter(&$page) {
+  
+  $conversion_id = variable_get('google_remarketing_tag_conversion_id', '');
+  $custom_params = variable_get('google_remarketing_tag_custom_params', '');
+  $remarketing_only = empty(variable_get('google_remarketing_tag_remarketing_only', '')) ? FALSE : TRUE;
+  $conversion_label = variable_get('google_remarketing_tag_conversion_label', '');
+  
+  if (!empty($conversion_id)) {
+    $js_data = '';
+    
+    if (!empty($conversion_label)) {
+      $label = 'label='.$conversion_label.'&amp;';
+    }
+    
+    $js_data .= 'var google_conversion_id = ' . $conversion_id . ';';
+    $js_data .= 'var google_remarketing_only = ' . $remarketing_only . ';';
+    
+    if (!empty($custom_params)) {
+      $js_data .= 'var google_custom_params = ' . $custom_params . ';';
+    }
+    
+    if (!empty($conversion_label)) {
+      $js_data .= 'var google_conversion_label = ' . $conversion_label . ';';
+    }
+    
+    $src = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $conversion_id . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';
+    
+    $noscript_markup = '<noscript>
+                  <div style="display:inline;">
+                  <img height="1" width="1" style="border-style:none;" alt="" src="'.$src.'"/>
+                  </div>
+                 </noscript>';
+    
+    $page['page_bottom']['remarketing_tag'] = array(
+        '#type' => 'markup',
+        '#markup' => $noscript_markup,
+        '#attached' => array(
+          'js' => array(
+             array('data' => $js_data, 'type' => 'inline'),
+             array('data' => '//www.googleadservices.com/pagead/conversion.js', 'type' => 'external'),
+          )
+        )
+    );
+  }
+}
+
