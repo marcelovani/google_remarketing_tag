@@ -88,7 +88,7 @@ function google_remarketing_tag_page_alter(&$page) {
   $theme_vars = array();
   $theme_vars['conversion_id'] = variable_get('google_remarketing_tag_conversion_id', '');
   $theme_vars['custom_params'] = variable_get('google_remarketing_tag_custom_params', '');
-  $theme_vars['remarketing_only'] = empty(variable_get('google_remarketing_tag_remarketing_only', '')) ? 'FALSE' : 'TRUE';
+  $theme_vars['remarketing_only'] = empty(variable_get('google_remarketing_tag_remarketing_only', '')) ? 'false' : 'true';
   $theme_vars['conversion_label'] = variable_get('google_remarketing_tag_conversion_label', '');
   
   $label = empty($theme_vars['conversion_label']) ? '' : 'label='.$theme_vars['conversion_label'].'&amp;';
