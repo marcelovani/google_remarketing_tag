@@ -1,3 +1,3 @@
 name = Google Remarketing Tag
-description = Google Remarketing tag.
+description = Adds a google remarketing tag javascript to the bottom of all pages. 
 core = 7.x
