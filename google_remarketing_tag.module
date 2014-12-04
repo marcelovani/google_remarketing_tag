@@ -7,7 +7,7 @@ function google_remarketing_tag_permission() {
   return array(
     'administer google remarketing tag configuration' => array(
       'title' => t('Administer Google Remarketing Tag configuration'),
-    ),
+    )
   );
 }
 
@@ -85,6 +85,10 @@ function google_remarketing_tag_admin_settings($form, &$form_state) {
  * Implements hook_page_alter().
  */
 function google_remarketing_tag_page_alter(&$page) {
+  if (path_is_admin(current_path())) {
+    return;
+  }
+
   $theme_vars = array();
   $theme_vars['conversion_id'] = variable_get('google_remarketing_tag_conversion_id', '');
   $theme_vars['custom_params'] = variable_get('google_remarketing_tag_custom_params', '');
@@ -92,8 +96,7 @@ function google_remarketing_tag_page_alter(&$page) {
   $theme_vars['conversion_label'] = variable_get('google_remarketing_tag_conversion_label', '');
 
   $label = empty($theme_vars['conversion_label']) ? '' : 'label=' . $theme_vars['conversion_label'] . '&amp;';
-
-  $theme_vars['src'] = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $theme_vars['conversion_id'] . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';;
+  $theme_vars['src'] = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $theme_vars['conversion_id'] . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';
 
   if (!empty($theme_vars['conversion_id'])) {
     $page['page_bottom']['remarketing_tag'] = array(
@@ -102,4 +105,3 @@ function google_remarketing_tag_page_alter(&$page) {
     );
   }
 }
-
