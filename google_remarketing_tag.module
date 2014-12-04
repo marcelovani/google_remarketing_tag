@@ -86,20 +86,23 @@ function google_remarketing_tag_admin_settings($form, &$form_state) {
  */
 function google_remarketing_tag_page_alter(&$page) {
   if (!path_is_admin(current_path())) {
-    $theme_vars = array();
-    $theme_vars['conversion_id'] = variable_get('google_remarketing_tag_conversion_id', '');
-    $theme_vars['custom_params'] = variable_get('google_remarketing_tag_custom_params', '');
-    $theme_vars['remarketing_only'] = empty(variable_get('google_remarketing_tag_remarketing_only', '')) ? 'false' : 'true';
-    $theme_vars['conversion_label'] = variable_get('google_remarketing_tag_conversion_label', '');
+    return;
+  }
 
-    $label = empty($theme_vars['conversion_label']) ? '' : 'label=' . $theme_vars['conversion_label'] . '&amp;';
-    $theme_vars['src'] = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $theme_vars['conversion_id'] . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';
+  $theme_vars = array();
+  $theme_vars['conversion_id'] = variable_get('google_remarketing_tag_conversion_id', '');
+  $theme_vars['custom_params'] = variable_get('google_remarketing_tag_custom_params', '');
+  $tag_remarketing_only = variable_get('google_remarketing_tag_remarketing_only', '');
+  $theme_vars['remarketing_only'] = empty($tag_remarketing_only) ? 'false' : 'true';
+  $theme_vars['conversion_label'] = variable_get('google_remarketing_tag_conversion_label', '');
 
-    if (!empty($theme_vars['conversion_id'])) {
-      $page['page_bottom']['remarketing_tag'] = array(
-        '#type' => 'markup',
-        '#markup' => theme('remarketing_tag', $theme_vars),
-      );
-    }
+  $label = empty($theme_vars['conversion_label']) ? '' : 'label=' . $theme_vars['conversion_label'] . '&amp;';
+  $theme_vars['src'] = '//googleads.g.doubleclick.net/pagead/viewthroughconversion/' . $theme_vars['conversion_id'] . '/?value=0&amp;' . $label . 'guid=ON&amp;script=0';
+
+  if (!empty($theme_vars['conversion_id'])) {
+    $page['page_bottom']['remarketing_tag'] = array(
+      '#type' => 'markup',
+      '#markup' => theme('remarketing_tag', $theme_vars),
+    );
   }
 }
