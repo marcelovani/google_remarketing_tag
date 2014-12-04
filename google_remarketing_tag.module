@@ -85,7 +85,7 @@ function google_remarketing_tag_admin_settings($form, &$form_state) {
  * Implements hook_page_alter().
  */
 function google_remarketing_tag_page_alter(&$page) {
-  if (!path_is_admin(current_path())) {
+  if (path_is_admin(current_path())) {
     return;
   }
 
