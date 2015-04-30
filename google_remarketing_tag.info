@@ -1,3 +1,5 @@
 name = Google Remarketing Tag
 description = Adds a google remarketing tag javascript to the bottom of all non-admin pages.
+package = Statistics
+configure = admin/config/system/googleremarketingtag
 core = 7.x
